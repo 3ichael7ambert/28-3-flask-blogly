@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, render_template, url_for
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Post
+from models import db, connect_db, User, Post, Tag,PostTag
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///blogly"
@@ -181,3 +181,15 @@ def posts_index():
 
     posts = Post.query.order_by(Post.created_at.desc()).all()
     return render_template('posts/index.html', posts=posts)
+
+
+
+
+@app.route('/tags')
+def tags_index():
+    # Retrieve the tags from the database or define it here
+    tags = Tag.query.all()
+
+    # Render the template with the tags
+    return render_template('tags/index.html', tags=tags)
+

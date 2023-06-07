@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}Latest Posts{% endblock %}
+
 {% block content %}
     <h1>Latest Posts</h1>
     <ul>
@@ -11,8 +13,12 @@
             </li>
         {% endfor %}
     </ul>
-    <p><a class="btn btn-primary" href="{{ url_for('users_index') }}">View All Users</a></p>
+    <p>
+        <a class="btn btn-primary" href="{{ url_for('users_index') }}">View All Users</a>
+        <a class="btn btn-secondary" href="{{ url_for('tags_index') }}">View All Tags</a>
+    </p>
 {% endblock %}
+
 
 
 

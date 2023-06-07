@@ -1,5 +1,3 @@
-"""SQLAlchemy models for blogly."""
-
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -9,52 +7,43 @@ DEFAULT_IMAGE_URL = "https://www.freeiconspng.com/thumbs/person-icon/name-people
 
 
 class User(db.Model):
-    """Site user."""
-
-    __tablename__ = "users"
-
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.Text, nullable=False)
-    last_name = db.Column(db.Text, nullable=False)
-    image_url = db.Column(db.Text, nullable=False, default=DEFAULT_IMAGE_URL)
-    posts = db.relationship('Post', backref='user', cascade='all, delete')
-    @property
-    def full_name(self):
-        """Return full name of user."""
-
-        return f"{self.first_name} {self.last_name}"
-
-
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    posts = db.relationship('Post', backref='author', lazy=True)
 
 class Post(db.Model):
-    """Blog post."""
-
-    __tablename__ = "posts"
-
+    __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.Text, nullable=False)
+    title = db.Column(db.String(120), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    tags = db.relationship('Tag', secondary='post_tags', backref='posts')
+    author = db.relationship('User', backref='author_posts')
 
 
 
 
 class Tag(db.Model):
+    """Tag Model"""
+
     __tablename__ = 'tags'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    tag_posts = db.relationship('Post', secondary='post_tags', backref='post_tags')
+
+    def __repr__(self):
+        return f"<Tag id={self.id} name={self.name}>"
+
 
 class PostTag(db.Model):
+    """PostTag Model"""
+
     __tablename__ = 'post_tags'
 
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
     tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), primary_key=True)
-
-    post = db.relationship('Post', backref='post_tags')
-    tag = db.relationship('Tag', backref='post_tags')
 
 
 def connect_db(app):
