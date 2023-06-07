@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Latest Posts</h1>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <a href="{{ url_for('posts_show', post_id=post.id) }}"><strong>{{ post.title }}</strong></a> - Posted by <a href="{{ url_for('users_show', user_id=post.user.id) }}">{{ post.user.username }}</a>
+                <br>
+                {{ post.created_at.strftime('%B %d, %Y, %I:%M %p') }}
+            </li>
+        {% endfor %}
+    </ul>
+    <p><a class="btn btn-primary" href="{{ url_for('users_index') }}">View All Users</a></p>
+{% endblock %}
+
+
+
+
+<!-- 
+%B: Full month name (e.g., January, February)
+%d: Day of the month as a zero-padded decimal number (e.g., 01, 02, ..., 31)
+%Y: Year with century as a decimal number (e.g., 2023)
+%I: Hour (12-hour clock) as a zero-padded decimal number (e.g., 01, 02, ..., 12)
+%M: Minute as a zero-padded decimal number (e.g., 00, 01, ..., 59)
+%p: AM or PM designation -->
