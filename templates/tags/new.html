@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Add Tag</h1>
+  <form method="POST" action="{{ url_for('tags_create') }}">
+    <label for="name">Tag Name:</label>
+    <input type="text" id="name" name="name">
+    <button type="submit">Create</button>
+  </form>
+{% endblock %}

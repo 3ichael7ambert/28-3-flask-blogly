@@ -24,6 +24,8 @@ class User(db.Model):
 
         return f"{self.first_name} {self.last_name}"
 
+
+
 class Post(db.Model):
     """Blog post."""
 
@@ -34,6 +36,25 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    tags = db.relationship('Tag', secondary='post_tags', backref='posts')
+
+
+
+
+class Tag(db.Model):
+    __tablename__ = 'tags'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+class PostTag(db.Model):
+    __tablename__ = 'post_tags'
+
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), primary_key=True)
+
+    post = db.relationship('Post', backref='post_tags')
+    tag = db.relationship('Tag', backref='post_tags')
 
 
 def connect_db(app):

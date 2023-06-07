@@ -30,7 +30,14 @@ Add Post
                 placeholder="Enter the content"></textarea>
     </div>
   </div>
-
+  
+  <label for="tags">Tags:</label>
+  <select id="tags" name="tags" multiple>
+    {% for tag in tags %}
+      <option value="{{ tag.id }}">{{ tag.name }}</option>
+    {% endfor %}
+  </select>
+  
   <div class="form-group row">
     <div class="ml-auto mr-3">
       <button type="submit" class="btn btn-success">Add</button>
