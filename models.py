@@ -5,18 +5,21 @@ db = SQLAlchemy()
 
 DEFAULT_IMAGE_URL = "https://www.freeiconspng.com/thumbs/person-icon/name-people-person-user-icon--icon-search-engine-1.png"
 
-
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
+    last_name = db.Column(db.String(255)) 
+    first_name = db.Column(db.String(255)) 
     username = db.Column(db.String(80), unique=True, nullable=False)
-    posts = db.relationship('Post', backref='posts_author')
+    
+    posts = db.relationship('Post', backref='user', lazy=True)
 
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
