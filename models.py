@@ -8,11 +8,15 @@ DEFAULT_IMAGE_URL = "https://www.freeiconspng.com/thumbs/person-icon/name-people
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    last_name = db.Column(db.String(255)) 
-    first_name = db.Column(db.String(255)) 
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    
-    posts = db.relationship('Post', backref='user', lazy=True)
+    first_name = db.Column(db.Text, nullable=False)
+    last_name = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.Text, nullable=False, default=DEFAULT_IMAGE_URL)
+    posts = db.relationship('Post', backref='user', cascade='all, delete')
+    @property
+    def full_name(self):
+        """Return full name of user."""
+
+        return f"{self.first_name} {self.last_name}"
 
 class Post(db.Model):
     __tablename__ = 'posts'
