@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, url_for
+from flask import Flask, request, redirect, render_template, url_for,flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Post, Tag,PostTag
 
@@ -193,3 +193,79 @@ def tags_index():
     # Render the template with the tags
     return render_template('tags/index.html', tags=tags)
 
+# ...
+
+# Route for creating a new tag
+@app.route('/tags/new', methods=['GET', 'POST'])
+def tags_new():
+    if request.method == 'POST':
+        # Handle form submission and create the new tag
+        # You can access the submitted data using request.form
+        # For example:
+        # tag_name = request.form['name']
+        # Code to create a new tag with the given name
+        tag_name = request.form['name']
+        new_tag = Tag(name=tag_name)
+        db.session.add(new_tag)
+        db.session.commit()
+        # Redirect to the list of tags
+        return redirect(url_for('tags_index'))
+    else:
+        # Render the new tag form template
+        return render_template('tags/new.html')
+    
+# ...
+
+
+
+# Route for listing all tags
+@app.route('/tags2')
+def tags_list():
+    # Code to fetch all tags from the database
+    # For example:
+    tags = Tag.query.all()
+
+    # Render the template and pass the tags data
+    return render_template('tags/list.html', tags=tags)
+
+
+# Route for editing a tag
+@app.route('/tags/<int:tag_id>/edit', methods=['GET', 'POST'])
+def tags_edit(tag_id):
+    tag = Tag.query.get(tag_id)
+    if request.method == 'POST':
+        # Handle form submission and update the tag
+        # You can access the submitted data using request.form
+        # For example:
+        tag_name = request.form['name']
+        # Code to update the tag with the new name
+        if request.method == 'POST':
+            tag_name = request.form['name']
+            tag.name = tag_name
+            db.session.commit()
+        # Redirect to the tag show page
+        return redirect(url_for('tags_show', tag_id=tag.id))
+    else:
+        # Render the edit tag form template
+        return render_template('tags/edit.html', tag=tag)
+
+
+# Route for showing a tag
+@app.route('/tags/<int:tag_id>')
+def tags_show(tag_id):
+    tag = Tag.query.get(tag_id)
+    # Render the tag show template
+    return render_template('tags/show.html', tag=tag)
+
+
+@app.route('/tags/<int:tag_id>/delete', methods=['POST'])
+def tags_delete(tag_id):
+    tag = Tag.query.get(tag_id)
+    if tag:
+        # Delete the tag from the database
+        db.session.delete(tag)
+        db.session.commit()
+        flash('Tag deleted successfully.', 'success')
+    else:
+        flash('Tag not found.', 'error')
+    return redirect(url_for('tags_index'))

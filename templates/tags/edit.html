@@ -2,9 +2,10 @@
 
 {% block content %}
   <h1>Edit Tag</h1>
-  <form method="POST" action="{{ url_for('tags_update', tag_id=tag.id) }}">
+  <form method="POST" action="{{ url_for('tags_edit', tag_id=tag.id) }}">
     <label for="name">Tag Name:</label>
     <input type="text" id="name" name="name" value="{{ tag.name }}">
-    <button type="submit">Update</button>
+    <button type="submit" class="btn btn-primary">Update</button>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='/tags/{{ tag.id }}'">Cancel</button>
   </form>
 {% endblock %}

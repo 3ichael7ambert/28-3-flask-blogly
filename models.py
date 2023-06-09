@@ -31,23 +31,17 @@ class Post(db.Model):
 
 
 class Tag(db.Model):
-    """Tag Model"""
-
     __tablename__ = 'tags'
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
-    tag_posts = db.relationship('Post', secondary='post_tags', backref='post_tags')
+    posts = db.relationship('Post', secondary='post_tags', backref='tags')
 
     def __repr__(self):
         return f"<Tag id={self.id} name={self.name}>"
 
 
 class PostTag(db.Model):
-    """PostTag Model"""
-
     __tablename__ = 'post_tags'
-
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
     tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), primary_key=True)
 
