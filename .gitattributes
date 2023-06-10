@@ -1,0 +1,3 @@
+*.css binary
+*.html binary
+*.py linguist-language=Flask
