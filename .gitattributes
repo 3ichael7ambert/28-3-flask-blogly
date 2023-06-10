@@ -1,3 +1,7 @@
-*.css -diff
-*.html -diff
+
+*.css linguist-detectable=false
+*.js linguist-detectable=false
+*.html linguist-detectable=false
+
+*.py text linguist-detectable=true
 *.py linguist-language=Flask
