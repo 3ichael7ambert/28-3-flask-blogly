@@ -4,4 +4,4 @@
 *.html linguist-detectable=false
 
 *.py text linguist-detectable=true
-*.py linguist-language=Flask
+# *.py linguist-language=Flask
