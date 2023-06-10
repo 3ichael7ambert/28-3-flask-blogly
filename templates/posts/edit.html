@@ -5,7 +5,8 @@
 {% block content %}
 
 <h1>Edit post</h1>
-<form method="POST">
+<form method="POST" action="{{ url_for('posts_edit', post_id=post.id) }}">
+
 
   <div class="form-group row">
     <label for="title" class="col-sm-2 col-form-label">Title</label>
@@ -29,11 +30,12 @@
   </div>
 
   <label for="tags">Tags:</label>
-<select id="tags" name="tags" multiple>
-  {% for tag in tags %}
-    <option value="{{ tag.id }}">{{ tag.name }}</option>
-  {% endfor %}
-</select>
+  <select id="tags" name="tags" multiple>
+    {% for tag in tags %}
+      <option value="{{ tag.id }}" {% if tag in post.tags %}selected{% endif %}>{{ tag.name }}</option>
+    {% endfor %}
+  </select>
+  
 
 
   <div class="form-group row">

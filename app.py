@@ -109,7 +109,7 @@ def users_destroy(user_id):
 @app.route('/users/<int:user_id>/posts/new', methods=["GET"])
 def posts_new_form(user_id):
     """Show a form to add a new post for the user"""
-
+    tags = Tag.query.all()
     user = User.query.get_or_404(user_id)
     return render_template('posts/new.html', user=user)
 
@@ -119,6 +119,7 @@ def posts_new(user_id):
     """Handle form submission for adding a new post"""
 
     user = User.query.get_or_404(user_id)
+    tags = Tag.query.all()
 
     new_post = Post(
         title=request.form['title'],
@@ -129,13 +130,28 @@ def posts_new(user_id):
     db.session.add(new_post)
     db.session.commit()
 
+    # Fetch the newly created post from the database
+    post = Post.query.filter_by(user_id=user_id).order_by(Post.created_at.desc()).first()
+
+    # Get the selected tags from the form
+    selected_tags = request.form.getlist('tags')
+
+    # Fetch the tag objects from the database based on the selected tags
+    selected_tags = Tag.query.filter(Tag.id.in_(selected_tags)).all()
+
+    # Assign the tags to the post
+    post.tags = selected_tags
+
+    db.session.commit()
+
     return redirect(f"/users/{user_id}")
+
 
 
 @app.route('/posts/<int:post_id>')
 def posts_show(post_id):
     """Show a page with info on a specific post"""
-
+    tags = Tag.query.all()
     post = Post.query.get_or_404(post_id)
     user = post.user
     return render_template('posts/show.html', post=post)
@@ -144,7 +160,7 @@ def posts_show(post_id):
 @app.route('/posts/<int:post_id>/edit')
 def posts_edit(post_id):
     """Show a form to edit an existing post"""
-
+    tags = Tag.query.all()
     post = Post.query.get_or_404(post_id)
     return render_template('posts/edit.html', post=post)
 
@@ -152,10 +168,17 @@ def posts_edit(post_id):
 @app.route('/posts/<int:post_id>/edit', methods=["POST"])
 def posts_update(post_id):
     """Handle form submission for updating an existing post"""
-
     post = Post.query.get_or_404(post_id)
     post.title = request.form['title']
     post.content = request.form['content']
+    # Get the selected tags from the form
+    tag_ids = request.form.getlist('tags')
+
+    # Query the tags based on the selected IDs
+    tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
+
+    # Assign the tags to the post
+    post.tags = tags
 
     db.session.add(post)
     db.session.commit()
@@ -178,7 +201,7 @@ def posts_destroy(post_id):
 @app.route('/posts')
 def posts_index():
     """Show a page with info on all posts"""
-
+    tags = Tag.query.all()
     posts = Post.query.order_by(Post.created_at.desc()).all()
     return render_template('posts/index.html', posts=posts)
 
